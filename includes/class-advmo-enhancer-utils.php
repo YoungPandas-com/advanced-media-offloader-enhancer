@@ -76,6 +76,10 @@ class ADVMO_Enhancer_Utils {
             'current_batch_ids' => [],
             'batch_history' => [],
             'error_ids' => [],
+            'last_processed_in_batch' => 0,
+            'last_errors_in_batch' => 0,
+            'last_skipped_in_batch' => 0,
+            'current_processing' => [],
         ];
 
         $data = get_option('advmo_enhancer_bulk_offload_data', []);
@@ -220,19 +224,38 @@ class ADVMO_Enhancer_Utils {
         } elseif ($seconds < 3600) {
             $minutes = floor($seconds / 60);
             $seconds = $seconds % 60;
-            return sprintf(
-                _n('%d minute', '%d minutes', $minutes, 'advanced-media-offloader-enhancer') . ($seconds ? ' ' . _n('%d second', '%d seconds', $seconds, 'advanced-media-offloader-enhancer') : ''),
-                $minutes, $seconds
+            
+            $output = sprintf(
+                _n('%d minute', '%d minutes', $minutes, 'advanced-media-offloader-enhancer'),
+                $minutes
             );
+            
+            if ($seconds > 0) {
+                $output .= ' ' . sprintf(
+                    _n('%d second', '%d seconds', $seconds, 'advanced-media-offloader-enhancer'),
+                    $seconds
+                );
+            }
+            
+            return $output;
         } else {
             $hours = floor($seconds / 3600);
             $seconds = $seconds % 3600;
             $minutes = floor($seconds / 60);
             
-            return sprintf(
-                _n('%d hour', '%d hours', $hours, 'advanced-media-offloader-enhancer') . ($minutes ? ' ' . _n('%d minute', '%d minutes', $minutes, 'advanced-media-offloader-enhancer') : ''),
-                $hours, $minutes
+            $output = sprintf(
+                _n('%d hour', '%d hours', $hours, 'advanced-media-offloader-enhancer'),
+                $hours
             );
+            
+            if ($minutes > 0) {
+                $output .= ' ' . sprintf(
+                    _n('%d minute', '%d minutes', $minutes, 'advanced-media-offloader-enhancer'),
+                    $minutes
+                );
+            }
+            
+            return $output;
         }
     }
 

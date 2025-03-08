@@ -23,6 +23,13 @@ define('ADVMO_ENHANCER_PATH', plugin_dir_path(__FILE__));
 define('ADVMO_ENHANCER_URL', plugin_dir_url(__FILE__));
 define('ADVMO_ENHANCER_BASENAME', plugin_basename(__FILE__));
 
+// Include the activator class
+require_once ADVMO_ENHANCER_PATH . 'includes/class-advmo-enhancer-activator.php';
+
+// Register activation and deactivation hooks
+register_activation_hook(__FILE__, ['ADVMO_Enhancer_Activator', 'activate']);
+register_deactivation_hook(__FILE__, ['ADVMO_Enhancer_Activator', 'deactivate']);
+
 /**
  * Main plugin class
  */
@@ -99,6 +106,9 @@ class ADVMO_Enhancer {
         
         // Initialize components
         $this->init_components();
+        
+        // Maybe run update routine
+        ADVMO_Enhancer_Activator::maybe_update();
     }
     
     /**
@@ -114,6 +124,7 @@ class ADVMO_Enhancer {
             require_once ADVMO_ENHANCER_PATH . 'includes/admin/class-advmo-enhancer-settings.php';
             require_once ADVMO_ENHANCER_PATH . 'includes/admin/class-advmo-enhancer-media-overview.php';
             require_once ADVMO_ENHANCER_PATH . 'includes/admin/class-advmo-enhancer-error-dashboard.php';
+            require_once ADVMO_ENHANCER_PATH . 'includes/admin/class-advmo-enhancer-dashboard-widget.php';
         }
         
         // Services
@@ -134,6 +145,7 @@ class ADVMO_Enhancer {
             new ADVMO_Enhancer_Settings();
             new ADVMO_Enhancer_Media_Overview();
             new ADVMO_Enhancer_Error_Dashboard();
+            new ADVMO_Enhancer_Dashboard_Widget();
         }
         
         // Initialize services

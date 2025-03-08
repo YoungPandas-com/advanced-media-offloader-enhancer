@@ -71,6 +71,9 @@ class ADVMO_Enhancer_Activator {
                 'current_batch_ids' => [],
                 'batch_history' => [],
                 'error_ids' => [],
+                'last_processed_in_batch' => 0,
+                'last_errors_in_batch' => 0,
+                'last_skipped_in_batch' => 0,
             ];
             
             update_option('advmo_enhancer_bulk_offload_data', $bulk_data);
@@ -81,6 +84,9 @@ class ADVMO_Enhancer_Activator {
         
         // Set activation timestamp
         update_option('advmo_enhancer_activated', time());
+        
+        // Set plugin version
+        update_option('advmo_enhancer_version', ADVMO_ENHANCER_VERSION);
         
         // Schedule cleanup events
         if (!wp_next_scheduled('advmo_enhancer_cleanup')) {
